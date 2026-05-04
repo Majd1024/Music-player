@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SoundRoom</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoundRoom</title>
+
+  <!-- CSS FILE -->
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="app">
 
+  <!-- SIDEBAR -->
   <aside class="sidebar">
     <h2>SoundRoom</h2>
 
@@ -22,6 +25,7 @@
     </nav>
   </aside>
 
+  <!-- MAIN -->
   <main class="main">
 
     <section class="hero">
@@ -29,12 +33,14 @@
       <p>Listen to your favorite tracks in one place.</p>
     </section>
 
-    <div class="card">
+    <!-- SONG CARD -->
+    <div class="card" onclick="selectSong()">
+
       <h3>Jade LeMac - Constellations</h3>
 
       <div class="video">
         <iframe
-          id="youtube-player"
+          id="musicFrame"
           src="https://www.youtube.com/embed/y13-xeaShIo?enablejsapi=1&rel=0"
           title="YouTube player"
           frameborder="0"
@@ -42,31 +48,31 @@
           allowfullscreen>
         </iframe>
       </div>
+
     </div>
 
   </main>
 
-  <!-- EMPTY BOTTOM PLAYER FIRST -->
-
-  <footer class="player empty" id="player">
+  <!-- BOTTOM PLAYER (hidden until click) -->
+  <footer class="player" id="player">
 
     <div class="player-left">
-      <img src="https://img.youtube.com/vi/y13-xeaShIo/hqdefault.jpg">
+      <img id="songImg"
+        src="https://img.youtube.com/vi/y13-xeaShIo/hqdefault.jpg">
 
       <div class="song-info">
-        <h4>Jade LeMac - Constellations</h4>
-        <p id="status">Now Playing</p>
+        <h4 id="songTitle">Jade LeMac - Constellations</h4>
+        <p id="status">Paused</p>
       </div>
     </div>
 
-    <button id="playBtn">⏸</button>
+    <button id="playBtn">▶</button>
 
   </footer>
 
 </div>
 
-<script src="https://www.youtube.com/iframe_api"></script>
-
+<!-- JS FILE -->
 <script src="script.js"></script>
 
 </body>
