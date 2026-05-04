@@ -1,44 +1,81 @@
-let player;
-let isPlaying = false;
+const searchInput = document.getElementById("searchInput");
+const cards = document.querySelectorAll(".card");
+const noResults = document.getElementById("noResults");
 
-function onYouTubeIframeAPIReady(){
-  player = new YT.Player("youtube-player", {
-    events: {
-      onStateChange: onPlayerStateChange
+const player = document.getElementById("player");
+const songImg = document.getElementById("songImg");
+const songTitle = document.getElementById("songTitle");
+const statusText = document.getElementById("status");
+const playBtn = document.getElementById("playBtn");
+
+let currentVideoId = "";
+let playing = false;
+
+function selectSong(videoId, title) {
+  currentVideoId = videoId;
+
+  player.style.display = "flex";
+  songImg.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  songTitle.textContent = title;
+  statusText.textContent = "Selected";
+  playBtn.textContent = "▶";
+  playing = false;
+}
+
+playBtn.addEventListener("click", function () {
+  if (!currentVideoId) return;
+
+  const selectedCard = [...cards].find(card =>
+    card.getAttribute("onclick").includes(currentVideoId)
+  );
+
+  if (!selectedCard) return;
+
+  const iframe = selectedCard.querySelector("iframe");
+
+  if (!playing) {
+    iframe.contentWindow.postMessage(
+      JSON.stringify({
+        event: "command",
+        func: "playVideo",
+        args: []
+      }),
+      "*"
+    );
+
+    playBtn.textContent = "⏸";
+    statusText.textContent = "Now Playing";
+    playing = true;
+  } else {
+    iframe.contentWindow.postMessage(
+      JSON.stringify({
+        event: "command",
+        func: "pauseVideo",
+        args: []
+      }),
+      "*"
+    );
+
+    playBtn.textContent = "▶";
+    statusText.textContent = "Paused";
+    playing = false;
+  }
+});
+
+searchInput.addEventListener("input", function () {
+  const searchValue = searchInput.value.toLowerCase().trim();
+  let found = false;
+
+  cards.forEach(card => {
+    const title = card.dataset.title.toLowerCase();
+
+    if (title.startsWith(searchValue)) {
+      card.style.display = "block";
+      found = true;
+    } else {
+      card.style.display = "none";
     }
   });
-}
 
-function onPlayerStateChange(event){
-
-  if(event.data === YT.PlayerState.PLAYING){
-    isPlaying = true;
-    document.getElementById("player").classList.remove("empty");
-    document.getElementById("status").textContent = "Now Playing";
-    document.getElementById("playBtn").textContent = "⏸";
-  }
-
-  if(event.data === YT.PlayerState.PAUSED){
-    isPlaying = false;
-    document.getElementById("status").textContent = "Paused";
-    document.getElementById("playBtn").textContent = "▶";
-  }
-
-  if(event.data === YT.PlayerState.ENDED){
-    isPlaying = false;
-    document.getElementById("status").textContent = "Ended";
-    document.getElementById("playBtn").textContent = "▶";
-  }
-}
-
-document.getElementById("playBtn").addEventListener("click", function(){
-
-  if(!player) return;
-
-  if(isPlaying){
-    player.pauseVideo();
-  }else{
-    player.playVideo();
-  }
-
+  noResults.style.display = found ? "none" : "block";
 });

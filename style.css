@@ -62,7 +62,7 @@ body {
   background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
   padding: 35px;
   border-radius: 24px;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 }
 
 .hero h1 {
@@ -74,12 +74,49 @@ body {
   color: #ccc;
 }
 
-/* GRID (SIDE BY SIDE FIX) */
+/* SEARCH */
+
+.search-box {
+  width: 100%;
+  max-width: 430px;
+  height: 50px;
+  background: #1e1e1e;
+  border-radius: 30px;
+  margin-bottom: 30px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid transparent;
+  transition: 0.3s ease;
+}
+
+.search-box:focus-within {
+  max-width: 520px;
+  border-color: #555;
+  background: #252525;
+  box-shadow: 0 0 20px rgba(255,255,255,0.08);
+}
+
+.search-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 16px;
+}
+
+.search-box span {
+  color: #aaa;
+}
+
+/* GRID */
 
 .grid {
   display: flex;
   gap: 25px;
-  flex-wrap: wrap; /* important so it goes down if no space */
+  flex-wrap: wrap;
 }
 
 /* CARD */
@@ -90,16 +127,17 @@ body {
   padding: 18px;
   border-radius: 20px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.25s ease;
 }
 
 .card:hover {
   background: #2a2a2a;
-  transform: translateY(-3px);
+  transform: translateY(-4px);
 }
 
 .card h3 {
   margin-bottom: 15px;
+  font-size: 18px;
 }
 
 /* VIDEO */
@@ -119,6 +157,15 @@ body {
   height: 100%;
   left: 0;
   top: 0;
+}
+
+/* NO RESULTS */
+
+.no-results {
+  display: none;
+  color: #aaa;
+  margin-top: 20px;
+  font-size: 18px;
 }
 
 /* PLAYER */
@@ -203,13 +250,20 @@ button {
     font-size: 30px;
   }
 
+  .search-box {
+    max-width: 100%;
+  }
+
+  .search-box:focus-within {
+    max-width: 100%;
+  }
+
   .card {
     width: 100%;
   }
 
   .player {
     left: 0;
+    padding: 0 15px;
   }
 }
-
-
