@@ -12,6 +12,14 @@ let players = {};
 let currentPlayerId = null;
 let isPlaying = false;
 
+function loadYouTubeAPI() {
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+
+  const firstScript = document.getElementsByTagName("script")[0];
+  firstScript.parentNode.insertBefore(tag, firstScript);
+}
+
 window.onYouTubeIframeAPIReady = function () {
   createPlayers();
 };
@@ -28,9 +36,13 @@ function createPlayers() {
       videoId: videoId,
       playerVars: {
         rel: 0,
-        controls: 1
+        controls: 1,
+        playsinline: 1
       },
       events: {
+        onReady: function () {
+          console.log(playerId + " ready");
+        },
         onStateChange: function (event) {
           handlePlayerStateChange(event, playerId, videoId, title);
         }
@@ -75,7 +87,7 @@ function showBottomPlayer(videoId, title, status, buttonText) {
 
 function pauseOtherSongs(activePlayerId) {
   Object.keys(players).forEach((id) => {
-    if (id !== activePlayerId && players[id].pauseVideo) {
+    if (id !== activePlayerId && players[id] && players[id].pauseVideo) {
       players[id].pauseVideo();
     }
   });
@@ -93,7 +105,7 @@ cards.forEach((card) => {
     currentPlayerId = playerId;
     showBottomPlayer(videoId, title, "Selected", "▶");
 
-    if (players[playerId]) {
+    if (players[playerId] && players[playerId].playVideo) {
       players[playerId].playVideo();
     }
   });
@@ -126,3 +138,5 @@ searchInput.addEventListener("input", function () {
 
   noResults.style.display = found ? "none" : "block";
 });
+
+loadYouTubeAPI();
