@@ -6,11 +6,33 @@ const playerBar = document.getElementById("player");
 const songImg = document.getElementById("songImg");
 const songTitle = document.getElementById("songTitle");
 const statusText = document.getElementById("status");
+
 const playBtn = document.getElementById("playBtn");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
 
 let players = {};
 let currentPlayerId = null;
+let currentIndex = 0;
 let isPlaying = false;
+
+const songs = [
+  {
+    playerId: "player1",
+    videoId: "y13-xeaShIo",
+    title: "Jade LeMac - Constellations"
+  },
+  {
+    playerId: "player2",
+    videoId: "SOJpE1KMUbo",
+    title: "Dave - Raindance (ft. Tems)"
+  },
+  {
+    playerId: "player3",
+    videoId: "7GwLnsVUwHY",
+    title: "Don Toliver - E85"
+  }
+];
 
 function loadYouTubeAPI() {
   const tag = document.createElement("script");
@@ -40,9 +62,6 @@ function createPlayers() {
         playsinline: 1
       },
       events: {
-        onReady: function () {
-          console.log(playerId + " ready");
-        },
         onStateChange: function (event) {
           handlePlayerStateChange(event, playerId, videoId, title);
         }
@@ -54,6 +73,7 @@ function createPlayers() {
 function handlePlayerStateChange(event, playerId, videoId, title) {
   if (event.data === YT.PlayerState.PLAYING) {
     currentPlayerId = playerId;
+    currentIndex = songs.findIndex(song => song.playerId === playerId);
     isPlaying = true;
 
     pauseOtherSongs(playerId);
@@ -70,9 +90,7 @@ function handlePlayerStateChange(event, playerId, videoId, title) {
 
   if (event.data === YT.PlayerState.ENDED) {
     if (currentPlayerId === playerId) {
-      isPlaying = false;
-      statusText.textContent = "Ended";
-      playBtn.textContent = "▶";
+      playNextSong();
     }
   }
 }
@@ -103,6 +121,8 @@ cards.forEach((card) => {
     const title = youtubeDiv.dataset.title;
 
     currentPlayerId = playerId;
+    currentIndex = songs.findIndex(song => song.playerId === playerId);
+
     showBottomPlayer(videoId, title, "Selected", "▶");
 
     if (players[playerId] && players[playerId].playVideo) {
@@ -120,6 +140,57 @@ playBtn.addEventListener("click", function () {
     players[currentPlayerId].playVideo();
   }
 });
+
+nextBtn.addEventListener("click", function () {
+  playNextSong();
+});
+
+prevBtn.addEventListener("click", function () {
+  if (!currentPlayerId || !players[currentPlayerId]) return;
+
+  const currentTime = players[currentPlayerId].getCurrentTime();
+
+  if (currentTime > 5) {
+    players[currentPlayerId].seekTo(0, true);
+    players[currentPlayerId].playVideo();
+  } else {
+    playPreviousSong();
+  }
+});
+
+function playNextSong() {
+  currentIndex++;
+
+  if (currentIndex >= songs.length) {
+    currentIndex = 0;
+  }
+
+  playSongByIndex(currentIndex);
+}
+
+function playPreviousSong() {
+  currentIndex--;
+
+  if (currentIndex < 0) {
+    currentIndex = songs.length - 1;
+  }
+
+  playSongByIndex(currentIndex);
+}
+
+function playSongByIndex(index) {
+  const song = songs[index];
+
+  currentPlayerId = song.playerId;
+  currentIndex = index;
+
+  showBottomPlayer(song.videoId, song.title, "Now Playing", "⏸");
+  pauseOtherSongs(song.playerId);
+
+  if (players[song.playerId] && players[song.playerId].playVideo) {
+    players[song.playerId].playVideo();
+  }
+}
 
 searchInput.addEventListener("input", function () {
   const searchValue = searchInput.value.toLowerCase().trim();
