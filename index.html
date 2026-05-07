@@ -1,110 +1,90 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SoundRoom</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoundRoom</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-  <body>
-    <div class="app">
-      <aside class="sidebar">
-        <h2>SoundRoom</h2>
+<body>
+  <div class="app">
 
-        <nav>
-          <a href="#">Home</a>
-          <a href="#">Library</a>
-          <a href="#">Playlists</a>
-          <a href="#">Favorites</a>
-        </nav>
-      </aside>
+    <aside class="sidebar">
+      <h2>SoundRoom</h2>
 
-      <main class="main">
-        <section class="hero">
-          <h1>Discover Music</h1>
-          <p>Listen to your favorite tracks in one place.</p>
-        </section>
+      <nav>
+        <a href="#">Home</a>
+        <a href="#">Library</a>
+        <a href="#">Playlists</a>
+        <a href="#">Favorites</a>
+      </nav>
+    </aside>
 
-        <div class="search-box">
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Search for a song..."
-          />
-          <span>🔍</span>
-        </div>
+    <main class="main">
 
-        <section class="grid" id="songList">
-          <div
-            class="card"
-            data-title="jade lemac constellations"
-            onclick="selectSong('y13-xeaShIo', 'Jade LeMac - Constellations')"
-          >
-            <h3>Jade LeMac - Constellations</h3>
+      <section class="hero">
+        <h1>Discover Music</h1>
+        <p>Listen to your favorite tracks in one place.</p>
+      </section>
 
-            <div class="video">
-              <iframe
-                id="activeFrame"
-                src="https://www.youtube.com/embed/y13-xeaShIo?enablejsapi=1&rel=0"
-                frameborder="0"
-                allow="autoplay; encrypted-media"
-                allowfullscreen
-              >
-              </iframe>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search for a song..." />
+        <span>🔍</span>
+      </div>
+
+      <section class="grid" id="songList">
+
+        <!-- SONG 1 -->
+        <div class="card" data-title="jade lemac constellations">
+          <h3>Jade LeMac - Constellations</h3>
+
+          <div class="video">
+            <div
+              class="youtube-player"
+              id="player1"
+              data-video-id="y13-xeaShIo"
+              data-title="Jade LeMac - Constellations">
             </div>
-          </div>
-
-          <div
-            class="card"
-            data-title="third song name"
-            onclick="selectSong('SOJpE1KMUbo', 'Third Song Name')"
-          >
-            <h3>Third Song Name</h3>
-
-            <div class="video">
-              <iframe
-                src="https://www.youtube.com/embed/SOJpE1KMUbo?enablejsapi=1&rel=0"
-                frameborder="0"
-                allow="autoplay; encrypted-media"
-                allowfullscreen
-              >
-              </iframe>
-            </div>
-          </div>
-
-          <!-- SONG 3 -->
-          <div class="card" data-title="third song name here">
-            <h3>Third Song Name</h3>
-
-            <div class="video">
-              <div
-                class="youtube-player"
-                id="player3"
-                data-video-id="SOJpE1KMUbo"
-                data-title="Third Song Name"
-              ></div>
-            </div>
-          </div>
-        </section>
-
-        <p class="no-results" id="noResults">No songs found.</p>
-      </main>
-
-      <footer class="player" id="player">
-        <div class="player-left">
-          <img id="songImg" />
-
-          <div class="song-info">
-            <h4 id="songTitle"></h4>
-            <p id="status">Paused</p>
           </div>
         </div>
 
-        <button id="playBtn">▶</button>
-      </footer>
-    </div>
+        <!-- SONG 2 -->
+        <div class="card" data-title="third song name">
+          <h3>Third Song Name</h3>
 
-    <script src="script.js"></script>
-  </body>
+          <div class="video">
+            <div
+              class="youtube-player"
+              id="player2"
+              data-video-id="SOJpE1KMUbo"
+              data-title="Third Song Name">
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <p class="no-results" id="noResults">No songs found.</p>
+
+    </main>
+
+    <footer class="player" id="player">
+      <div class="player-left">
+        <img id="songImg" />
+
+        <div class="song-info">
+          <h4 id="songTitle"></h4>
+          <p id="status">Paused</p>
+        </div>
+      </div>
+
+      <button id="playBtn">▶</button>
+    </footer>
+
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="script.js"></script>
+</body>
 </html>

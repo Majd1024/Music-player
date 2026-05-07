@@ -2,71 +2,123 @@ const searchInput = document.getElementById("searchInput");
 const cards = document.querySelectorAll(".card");
 const noResults = document.getElementById("noResults");
 
-const player = document.getElementById("player");
+const playerBar = document.getElementById("player");
 const songImg = document.getElementById("songImg");
 const songTitle = document.getElementById("songTitle");
 const statusText = document.getElementById("status");
 const playBtn = document.getElementById("playBtn");
 
-let currentVideoId = "";
-let playing = false;
+let players = {};
+let currentPlayerId = null;
+let isPlaying = false;
 
-function selectSong(videoId, title) {
-  currentVideoId = videoId;
+/* This function is called automatically by YouTube API */
+function onYouTubeIframeAPIReady() {
+  const youtubePlayers = document.querySelectorAll(".youtube-player");
 
-  player.style.display = "flex";
-  songImg.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-  songTitle.textContent = title;
-  statusText.textContent = "Selected";
-  playBtn.textContent = "▶";
-  playing = false;
+  youtubePlayers.forEach((playerDiv) => {
+    const playerId = playerDiv.id;
+    const videoId = playerDiv.dataset.videoId;
+    const title = playerDiv.dataset.title;
+
+    players[playerId] = new YT.Player(playerId, {
+      videoId: videoId,
+      playerVars: {
+        rel: 0,
+        controls: 1
+      },
+      events: {
+        onStateChange: function (event) {
+          handlePlayerStateChange(event, playerId, videoId, title);
+        }
+      }
+    });
+  });
 }
 
+/* When YouTube play/pause changes */
+function handlePlayerStateChange(event, playerId, videoId, title) {
+  if (event.data === YT.PlayerState.PLAYING) {
+    currentPlayerId = playerId;
+    isPlaying = true;
+
+    pauseOtherSongs(playerId);
+    showBottomPlayer(videoId, title, "Now Playing", "⏸");
+  }
+
+  if (event.data === YT.PlayerState.PAUSED) {
+    if (currentPlayerId === playerId) {
+      isPlaying = false;
+      statusText.textContent = "Paused";
+      playBtn.textContent = "▶";
+    }
+  }
+
+  if (event.data === YT.PlayerState.ENDED) {
+    if (currentPlayerId === playerId) {
+      isPlaying = false;
+      statusText.textContent = "Ended";
+      playBtn.textContent = "▶";
+    }
+  }
+}
+
+/* Show bottom player */
+function showBottomPlayer(videoId, title, status, buttonText) {
+  playerBar.style.display = "flex";
+  songImg.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  songTitle.textContent = title;
+  statusText.textContent = status;
+  playBtn.textContent = buttonText;
+}
+
+/* Pause all other songs */
+function pauseOtherSongs(activePlayerId) {
+  Object.keys(players).forEach((id) => {
+    if (id !== activePlayerId && players[id].pauseVideo) {
+      players[id].pauseVideo();
+    }
+  });
+}
+
+/* Clicking a card selects and plays the song */
+cards.forEach((card) => {
+  card.addEventListener("click", function () {
+    const youtubeDiv = card.querySelector(".youtube-player");
+
+    if (!youtubeDiv) return;
+
+    const playerId = youtubeDiv.id;
+    const videoId = youtubeDiv.dataset.videoId;
+    const title = youtubeDiv.dataset.title;
+
+    currentPlayerId = playerId;
+
+    showBottomPlayer(videoId, title, "Selected", "▶");
+
+    if (players[playerId]) {
+      players[playerId].playVideo();
+    }
+  });
+});
+
+/* Bottom play / pause button */
 playBtn.addEventListener("click", function () {
-  if (!currentVideoId) return;
+  if (!currentPlayerId || !players[currentPlayerId]) return;
 
-  const selectedCard = [...cards].find(card =>
-    card.getAttribute("onclick").includes(currentVideoId)
-  );
-
-  if (!selectedCard) return;
-
-  const iframe = selectedCard.querySelector("iframe");
-
-  if (!playing) {
-    iframe.contentWindow.postMessage(
-      JSON.stringify({
-        event: "command",
-        func: "playVideo",
-        args: []
-      }),
-      "*"
-    );
-
-    playBtn.textContent = "⏸";
-    statusText.textContent = "Now Playing";
-    playing = true;
+  if (isPlaying) {
+    players[currentPlayerId].pauseVideo();
   } else {
-    iframe.contentWindow.postMessage(
-      JSON.stringify({
-        event: "command",
-        func: "pauseVideo",
-        args: []
-      }),
-      "*"
-    );
-
-    playBtn.textContent = "▶";
-    statusText.textContent = "Paused";
-    playing = false;
+    players[currentPlayerId].playVideo();
   }
 });
 
+/* Search songs */
 searchInput.addEventListener("input", function () {
   const searchValue = searchInput.value.toLowerCase().trim();
   let found = false;
 
-  cards.forEach(card => {
+  cards.forEach((card) => {
     const title = card.dataset.title.toLowerCase();
 
     if (title.startsWith(searchValue)) {
