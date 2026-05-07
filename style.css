@@ -16,8 +16,6 @@ body {
   min-height: 100vh;
 }
 
-/* SIDEBAR */
-
 .sidebar {
   width: 230px;
   height: 100vh;
@@ -47,16 +45,12 @@ body {
   color: white;
 }
 
-/* MAIN */
-
 .main {
   margin-left: 230px;
   width: calc(100% - 230px);
   padding: 25px;
   padding-bottom: 120px;
 }
-
-/* HERO */
 
 .hero {
   background: linear-gradient(135deg, #2d2d2d, #1a1a1a);
@@ -73,8 +67,6 @@ body {
 .hero p {
   color: #ccc;
 }
-
-/* SEARCH */
 
 .search-box {
   width: 100%;
@@ -111,15 +103,11 @@ body {
   color: #aaa;
 }
 
-/* GRID */
-
 .grid {
   display: flex;
   gap: 25px;
   flex-wrap: wrap;
 }
-
-/* CARD */
 
 .card {
   width: 320px;
@@ -140,8 +128,6 @@ body {
   font-size: 18px;
 }
 
-/* VIDEO */
-
 .video {
   position: relative;
   width: 100%;
@@ -160,16 +146,12 @@ body {
   top: 0;
 }
 
-/* NO RESULTS */
-
 .no-results {
   display: none;
   color: #aaa;
   margin-top: 20px;
   font-size: 18px;
 }
-
-/* PLAYER */
 
 .player {
   position: fixed;
@@ -222,7 +204,10 @@ button {
   cursor: pointer;
 }
 
-/* MOBILE */
+.repeat-active {
+  background: #1db954;
+  color: white;
+}
 
 @media (max-width: 768px) {
   .sidebar {

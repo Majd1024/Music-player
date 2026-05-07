@@ -10,11 +10,13 @@ const statusText = document.getElementById("status");
 const playBtn = document.getElementById("playBtn");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
+const repeatBtn = document.getElementById("repeatBtn");
 
 let players = {};
 let currentPlayerId = null;
 let currentIndex = 0;
 let isPlaying = false;
+let repeatMode = false;
 
 const songs = [
   {
@@ -89,6 +91,13 @@ function handlePlayerStateChange(event, playerId, videoId, title) {
   }
 
   if (event.data === YT.PlayerState.ENDED) {
+
+    if (repeatMode) {
+      players[playerId].seekTo(0);
+      players[playerId].playVideo();
+      return;
+    }
+
     if (currentPlayerId === playerId) {
       playNextSong();
     }
@@ -158,6 +167,16 @@ prevBtn.addEventListener("click", function () {
   }
 });
 
+repeatBtn.addEventListener("click", function () {
+  repeatMode = !repeatMode;
+
+  if (repeatMode) {
+    repeatBtn.classList.add("repeat-active");
+  } else {
+    repeatBtn.classList.remove("repeat-active");
+  }
+});
+
 function playNextSong() {
   currentIndex++;
 
@@ -185,6 +204,7 @@ function playSongByIndex(index) {
   currentIndex = index;
 
   showBottomPlayer(song.videoId, song.title, "Now Playing", "⏸");
+
   pauseOtherSongs(song.playerId);
 
   if (players[song.playerId] && players[song.playerId].playVideo) {
