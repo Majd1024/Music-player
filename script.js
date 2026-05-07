@@ -12,11 +12,8 @@ let players = {};
 let currentPlayerId = null;
 let isPlaying = false;
 
-window.onYouTubeIframeAPIReady = function () {
-  createPlayers();
-};
-
-function createPlayers() {
+/* This function is called automatically by YouTube API */
+function onYouTubeIframeAPIReady() {
   const youtubePlayers = document.querySelectorAll(".youtube-player");
 
   youtubePlayers.forEach((playerDiv) => {
@@ -39,6 +36,7 @@ function createPlayers() {
   });
 }
 
+/* When YouTube play/pause changes */
 function handlePlayerStateChange(event, playerId, videoId, title) {
   if (event.data === YT.PlayerState.PLAYING) {
     currentPlayerId = playerId;
@@ -65,6 +63,7 @@ function handlePlayerStateChange(event, playerId, videoId, title) {
   }
 }
 
+/* Show bottom player */
 function showBottomPlayer(videoId, title, status, buttonText) {
   playerBar.style.display = "flex";
   songImg.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
@@ -73,6 +72,7 @@ function showBottomPlayer(videoId, title, status, buttonText) {
   playBtn.textContent = buttonText;
 }
 
+/* Pause all other songs */
 function pauseOtherSongs(activePlayerId) {
   Object.keys(players).forEach((id) => {
     if (id !== activePlayerId && players[id].pauseVideo) {
@@ -81,9 +81,11 @@ function pauseOtherSongs(activePlayerId) {
   });
 }
 
+/* Clicking a card selects and plays the song */
 cards.forEach((card) => {
   card.addEventListener("click", function () {
     const youtubeDiv = card.querySelector(".youtube-player");
+
     if (!youtubeDiv) return;
 
     const playerId = youtubeDiv.id;
@@ -91,6 +93,7 @@ cards.forEach((card) => {
     const title = youtubeDiv.dataset.title;
 
     currentPlayerId = playerId;
+
     showBottomPlayer(videoId, title, "Selected", "▶");
 
     if (players[playerId]) {
@@ -99,6 +102,7 @@ cards.forEach((card) => {
   });
 });
 
+/* Bottom play / pause button */
 playBtn.addEventListener("click", function () {
   if (!currentPlayerId || !players[currentPlayerId]) return;
 
@@ -109,6 +113,7 @@ playBtn.addEventListener("click", function () {
   }
 });
 
+/* Search songs */
 searchInput.addEventListener("input", function () {
   const searchValue = searchInput.value.toLowerCase().trim();
   let found = false;
